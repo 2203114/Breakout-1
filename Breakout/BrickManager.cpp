@@ -18,7 +18,7 @@ void BrickManager::createBricks(int rows, int cols, float brickWidth, float bric
         for (int j = 0; j < cols; ++j) {
             float x = j * (brickWidth + spacing) + leftEdge;
             float y = i * (brickHeight + spacing) + TOP_PADDING;
-            _bricks.emplace_back(x, y, brickWidth, brickHeight);
+            _bricks.emplace_back(x, y, brickWidth, brickHeight, i+1);
         }
     }
 }
@@ -46,10 +46,17 @@ int BrickManager::checkCollision(sf::CircleShape& ball, sf::Vector2f& direction)
             // unless it's horizontal (collision from side)
             collisionResponse = 1;
 
-        // Mark the brick as destroyed (for simplicity, let's just remove it from rendering)
-        // In a complete implementation, you would set an _isDestroyed flag or remove it from the vector
-        brick = _bricks.back();
-        _bricks.pop_back();
+        brick.setHealth(brick.getHealth() - 1);
+
+        if (brick.getHealth() <= 0)
+        {
+            // Mark the brick as destroyed (for simplicity, let's just remove it from rendering)
+            // In a complete implementation, you would set an _isDestroyed flag or remove it from the vector
+            brick = _bricks.back();
+            _bricks.pop_back();
+        }
+
+       
         break;
     }
     if (_bricks.size() == 0)
